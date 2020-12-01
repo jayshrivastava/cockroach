@@ -9,7 +9,7 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[addColumn-0]
-	_ = x[addConstraint-1]
+	_ = x[addCheckConstraint-1]
 	_ = x[addForeignKeyConstraint-2]
 	_ = x[addUniqueConstraint-3]
 	_ = x[createIndex-4]
@@ -41,9 +41,9 @@ func _() {
 	_ = x[validate-30]
 }
 
-const _opType_name = "addColumnaddConstraintaddForeignKeyConstraintaddUniqueConstraintcreateIndexcreateSequencecreateTablecreateTableAscreateViewcreateEnumcreateSchemadropColumndropColumnDefaultdropColumnNotNulldropColumnStoreddropConstraintdropIndexdropSequencedropTabledropViewdropSchemarenameColumnrenameIndexrenameSequencerenameTablerenameViewsetColumnDefaultsetColumnNotNullsetColumnTypeinsertRowvalidate"
+const _opType_name = "addColumnaddCheckConstraintaddForeignKeyConstraintaddUniqueConstraintcreateIndexcreateSequencecreateTablecreateTableAscreateViewcreateEnumcreateSchemadropColumndropColumnDefaultdropColumnNotNulldropColumnStoreddropConstraintdropIndexdropSequencedropTabledropViewdropSchemarenameColumnrenameIndexrenameSequencerenameTablerenameViewsetColumnDefaultsetColumnNotNullsetColumnTypeinsertRowvalidate"
 
-var _opType_index = [...]uint16{0, 9, 22, 45, 64, 75, 89, 100, 113, 123, 133, 145, 155, 172, 189, 205, 219, 228, 240, 249, 257, 267, 279, 290, 304, 315, 325, 341, 357, 370, 379, 387}
+var _opType_index = [...]uint16{0, 9, 27, 50, 69, 80, 94, 105, 118, 128, 138, 150, 160, 177, 194, 210, 224, 233, 245, 254, 262, 272, 284, 295, 309, 320, 330, 346, 362, 375, 384, 392}
 
 func (i opType) String() string {
 	if i < 0 || i >= opType(len(_opType_index)-1) {

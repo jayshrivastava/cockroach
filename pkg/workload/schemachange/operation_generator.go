@@ -91,7 +91,7 @@ type opType int
 
 const (
 	addColumn               opType = iota // ALTER TABLE <table> ADD [COLUMN] <column> <type>
-	addConstraint                         // ALTER TABLE <table> ADD CONSTRAINT <constraint> <def>
+	addCheckConstraint                    // ALTER TABLE <table> ADD CONSTRAINT <constraint> CHECK <bool expr>
 	addForeignKeyConstraint               // ALTER TABLE <table> ADD CONSTRAINT <constraint> FOREIGN KEY (<column>) REFERENCES <table> (<column>)
 	addUniqueConstraint                   // ALTER TABLE <table> ADD CONSTRAINT <constraint> UNIQUE (<column>)
 
@@ -133,7 +133,7 @@ const (
 
 var opFuncs = map[opType]func(*operationGenerator, *pgx.Tx) (string, error){
 	addColumn:               (*operationGenerator).addColumn,
-	addConstraint:           (*operationGenerator).addConstraint,
+	addCheckConstraint:      (*operationGenerator).addCheckConstraint,
 	addForeignKeyConstraint: (*operationGenerator).addForeignKeyConstraint,
 	addUniqueConstraint:     (*operationGenerator).addUniqueConstraint,
 	createIndex:             (*operationGenerator).createIndex,
@@ -174,7 +174,7 @@ func init() {
 
 var opWeights = []int{
 	addColumn:               1,
-	addConstraint:           0, // TODO(spaskob): unimplemented
+	addCheckConstraint:      0, // TODO(spaskob): unimplemented
 	addForeignKeyConstraint: 1,
 	addUniqueConstraint:     1,
 	createIndex:             1,
@@ -299,9 +299,11 @@ func (og *operationGenerator) addColumn(tx *pgx.Tx) (string, error) {
 	return fmt.Sprintf(`ALTER TABLE %s ADD COLUMN %s`, tableName, tree.Serialize(def)), nil
 }
 
-func (og *operationGenerator) addConstraint(tx *pgx.Tx) (string, error) {
-	// TODO(peter): unimplemented
-	// - Export sqlbase.randColumnTableDef.
+func (og *operationGenerator) addCheckConstraint(tx *pgx.Tx) (string, error) {
+	// TODO (jayshrivastava): unimplemented
+	// When implemented, the insertRow op will need to be updated to check if attempting to
+	// insert a particular a row will result in a pgcode.CheckViolation. If insertRow is updated
+	// to supply DEFAULT values, then the violation check will need to be updated as well.
 	return "", nil
 }
 
@@ -1661,6 +1663,11 @@ func (og *operationGenerator) insertRow(tx *pgx.Tx) (string, error) {
 	numRows := og.randIntn(3) + 1
 	for i := 0; i < numRows; i++ {
 		var row []string
+		// TODO (jayshrivastava) add DEFAULT support
+		// Similarly to how they handle NULL values, violatesUniqueConstraints and violatesFkConstraints will need
+		// to be updated to handle DEFAULT. This will involve querying for default values from information_schema.columns,
+		// substituting these values in for "DEFAULT" values, and checking if the new values violate constraints.
+		// Once the addCheckConstraint op is implemented, it will need to be updated as well.
 		for _, col := range cols {
 			d := rowenc.RandDatum(og.params.rng, col.typ, col.nullable)
 			row = append(row, tree.AsStringWithFlags(d, tree.FmtParsable))
